@@ -4,45 +4,6 @@ import Link from "next/link"
 export default function LandingPage() {
   return (
     <main className="min-h-screen flex flex-col bg-[#f3f1ea] overflow-x-hidden">
-      {/* Header */}
-      <header
-        className="fixed top-0 left-0 right-0 z-50 
-        bg-[#F2F1EA]/80 backdrop-blur-lg border-b-2 border-[#E8E8E8]
-        h-[66px] flex items-center"
-      >
-        <div className="container mx-auto px-4 flex justify-between items-center w-full max-w-7xl">
-          {/* Logo container */}
-          <div className="lg:absolute lg:left-[271px]">
-            <div className="w-[120px] h-[32px] relative">
-              <Image
-                src="https://res.cloudinary.com/dfyrk32ua/image/upload/v1740208532/kommodex/kommodex_ke2bom.webp"
-                alt="Nua Logo"
-                fill
-                sizes="120px"
-                className="object-contain object-left"
-                priority
-                quality={100}
-              />
-            </div>
-          </div>
-
-          {/* Right side elements */}
-          <div className="lg:absolute lg:right-[271px] flex items-center gap-4 sm:gap-[40px]">
-            <Link
-              href="/changelog"
-              className="text-[13px] font-medium text-gray-700 hover:text-gray-900 transition-colors font-instrument-sans"
-            >
-              Changelog
-            </Link>
-            <Link
-              href="/waitlist"
-              className="text-[13px] font-medium bg-black text-white px-[13px] pt-[8px] pb-[8px] rounded-[7px] hover:bg-gray-800 transition-colors font-instrument-sans whitespace-nowrap"
-            >
-              Request Access
-            </Link>
-          </div>
-        </div>
-      </header>
 
       <div className="flex-1 flex flex-col items-center bg-[#f3f1ea] w-full">
         <div className="w-full" style={{ height: "285px" }}>
@@ -75,13 +36,13 @@ export default function LandingPage() {
           you&apos;d normally spend weeks uncovering.
         </p>
 
-        <Link href="/waitlist" style={{ marginTop: "-2px" }}>
+        <Link href="/login" style={{ marginTop: "-2px" }}>
           <div
             className="inline-flex items-center bg-black text-white rounded-[10px] hover:bg-black/90 transition-colors font-instrument-sans"
             style={{ width: "227px", height: "49px" }}
           >
             <div className="flex items-center justify-between w-full pl-[22px] pr-[17px]">
-              <span className="text-[16px] sm:text-[19px] whitespace-nowrap">Request Access</span>
+              <span className="text-[16px] sm:text-[19px] whitespace-nowrap">Try Now</span>
               <div className="flex items-center gap-[14px]">
                 <div className="w-[36px] h-[15px] relative">
                   <Image
@@ -208,7 +169,7 @@ export default function LandingPage() {
               Committed to build the best tool for the sales of SaaS.
               <br />
               <Link
-                href="/waitlist"
+                href="/login"
                 className="inline-flex items-center hover:opacity-80 font-instrument-sans text-[16px] leading-[20px] text-black"
                 style={{
                   fontWeight: 500,
@@ -275,42 +236,6 @@ export default function LandingPage() {
         </div>
       </section>
       */}
-      {/* Footer */}
-      <footer className="bg-black text-white py-8 sm:py-12 w-full mt-20 sm:mt-40">
-        <div className="container mx-auto px-4 w-full">
-          <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start w-full">
-            <div className="flex flex-col items-center lg:items-start gap-4 sm:gap-2 w-full">
-              <div className="w-[46px] h-[13px] relative mb-4 sm:mb-2">
-                <Image
-                  src="https://res.cloudinary.com/ducqjmtlk/image/upload/q_100/v1737901490/nuablack_dgaajp.png"
-                  alt="Nua Logo"
-                  fill
-                  sizes="46px"
-                  className="object-contain object-left"
-                  quality={100}
-                />
-              </div>
-              <div className="flex flex-wrap justify-center gap-4 lg:gap-12 text-sm">
-                <Link href="/changelog" className="hover:opacity-80 font-instrument-sans">
-                  Changelog
-                </Link>
-                <Link href="/blog" className="hover:opacity-80 font-instrument-sans">
-                  Blog
-                </Link>
-                <Link href="/about-us" className="hover:opacity-80 font-instrument-sans">
-                  About us
-                </Link>
-                <Link href="/contact" className="hover:opacity-80 font-instrument-sans">
-                  Contact
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div className="mt-8 lg:mt-40 text-sm opacity-70 text-center lg:text-left font-instrument-serif">
-            Open Sourced under the MIT License | <a href="https://github.com/kewonit/mevents/">Github</a>
-          </div>
-        </div>
-      </footer>
     </main>
   )
 }
