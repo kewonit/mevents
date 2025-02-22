@@ -1,16 +1,12 @@
 import { TopicsTable } from '../components/TopicsTable'
 import { Topic } from '../utils/db'
-import { createClient } from '../utils/supabase/server'
 import Image from "next/image"
 
 export const revalidate = 0
 
 export default async function TopicsPage() {
-  const supabase = await createClient()
-  const { data: topics } = await supabase
-    .from('topics')
-    .select('*')
-    .order('name') as { data: Topic[] }
+  const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/topics`)
+  const topics = await response.json() as Topic[]
 
   return (
     <div className="mx-auto pt-6">
@@ -35,16 +31,19 @@ export default async function TopicsPage() {
               Explore the topics that interest you the most and find communities that share your interests. Find your tribe and start surfing the waves of knowledge together.
             </p>
           </div>
-          <div className="relative flex justify-center">
+          <div className="relative overflow-visible">
             <Image
-              src="https://res.cloudinary.com/ducqjmtlk/image/upload/v1738267414/demodemo_1_hc3xrz.png"
+              src="https://res.cloudinary.com/dfyrk32ua/image/upload/v1740224775/kommodex/MacBook_Air_-_2_txgi16.webp"
               alt="Demo Visualization"
-              width={1600}  // increased width further
-              height={1200} // increased height further
+              width={3000}
+              height={2400}
               quality={100}
-              className="object-contain"
+              className="object-contain scale-125"
               priority
-              style={{ marginTop: '0px' }}
+              style={{ 
+                marginTop: '0px',
+                transform: 'scale(1.5)'
+              }}
             />
           </div>
         </div>
