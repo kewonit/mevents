@@ -99,9 +99,6 @@ export function CommunityCard({ community }: CommunityCardProps) {
             <div className="flex items-center justify-between border-t border-gray-100 pt-3 mt-auto gap-2">
               <VoteButton
                 communityId={community.id}
-                upvotes={community.upvotes}
-                downvotes={community.downvotes}
-                userVote={community.user_vote}
               />
               <a
                 href={community.external_url || '#'}
