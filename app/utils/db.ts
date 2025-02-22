@@ -44,6 +44,7 @@ export interface CommunityWithStats extends Community {
   upvotes: number
   downvotes: number
   vote_score: number
+  user_vote?: VoteType | null
 }
 
 // Database helper types
