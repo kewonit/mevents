@@ -1,11 +1,11 @@
 import { TopicsTable } from '../components/TopicsTable'
-import { Topic } from '../utils/db'
+import { TopicWithStats as Topic } from '../utils/db'
 import Image from "next/image"
 
 export const revalidate = 0
 
 export default async function TopicsPage() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/topics`)
+  const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/topics/stats`)
   const topics = await response.json() as Topic[]
 
   return (
