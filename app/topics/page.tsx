@@ -9,7 +9,7 @@ export default async function TopicsPage() {
   const topics = await response.json() as Topic[]
 
   return (
-    <div className="mx-auto pt-6">
+    <div className="mx-auto pt-6 overflow-x-hidden">
       <section className="w-full bg-gradient-to-r from-[#f3f1ea] to-[#e0d8c3] relative">
         <div className="w-full h-[50px]">
           <div
