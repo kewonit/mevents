@@ -22,10 +22,11 @@ function ActionButton({ topic, colorIndex }: { topic: Topic; colorIndex: number 
   const router = useRouter()
   const colorClasses = pastelColors[colorIndex]
   
-  const slug = topic.name
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '')
+  const handleClick = async () => {
+    const response = await fetch(`/api/topics/slug?name=${encodeURIComponent(topic.name)}`)
+    const { slug } = await response.json()
+    router.push(`/topics/${slug}`)
+  }
   
   return (
     <Button
@@ -42,7 +43,7 @@ function ActionButton({ topic, colorIndex }: { topic: Topic; colorIndex: number 
         tracking-wide
         flex items-center gap-2
       `}
-      onClick={() => router.push(`/topics/${slug}`)}
+      onClick={handleClick}
     >
       View Topic
       <ArrowRight className="h-4 w-4" />
