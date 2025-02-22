@@ -4,6 +4,7 @@ import { CommunityWithStats } from "@/app/utils/db"
 import { CommunityCard } from "./CommunityCard"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
+import { VoteProvider } from "@/app/contexts/VoteContext"
 
 type SortOption = "members" | "votes" | "newest"
 
@@ -29,31 +30,33 @@ export const CommunityGrid: React.FC<CommunityGridProps> = ({ communities }) => 
   })
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-end">
-        <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="members">Most Members</SelectItem>
-            <SelectItem value="votes">Top Voted</SelectItem>
-            <SelectItem value="newest">Newest</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      
-      <div className="grid grid-cols-1 gap-6">
-        {sortedCommunities.map((community) => (
-          <CommunityCard key={community.id} community={community} />
-        ))}
-      </div>
-      
-      {communities.length === 0 && (
-        <div className="text-center py-12 text-gray-500">
-          No communities found for this topic yet.
+    <VoteProvider initialCommunities={communities}>
+      <div className="space-y-6">
+        <div className="flex justify-end">
+          <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="members">Most Members</SelectItem>
+              <SelectItem value="votes">Top Voted</SelectItem>
+              <SelectItem value="newest">Newest</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-      )}
-    </div>
+        
+        <div className="grid grid-cols-1 gap-6">
+          {sortedCommunities.map((community) => (
+            <CommunityCard key={community.id} community={community} />
+          ))}
+        </div>
+        
+        {communities.length === 0 && (
+          <div className="text-center py-12 text-gray-500">
+            No communities found for this topic yet.
+          </div>
+        )}
+      </div>
+    </VoteProvider>
   )
 }

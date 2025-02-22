@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { cn } from "@/lib/utils"
 import { ArrowUpIcon, ArrowDownIcon } from "lucide-react"
@@ -6,19 +6,24 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { VoteType } from "../utils/db"
 import { Button } from "@/components/ui/button"
+import { useVotes } from "../contexts/VoteContext"
 
 interface VoteButtonProps {
   communityId: string
-  upvotes: number
-  downvotes: number
-  userVote?: VoteType | null
   className?: string
 }
 
-export function VoteButton({ communityId, upvotes, downvotes, userVote, className }: VoteButtonProps) {
-  const router = useRouter()
+export function VoteButton({ communityId, className }: VoteButtonProps) {
+  const { votes, updateVote } = useVotes()
+  const { upvotes, downvotes, userVote } = votes[communityId]
 
   const handleVote = async (voteType: VoteType) => {
+    const previousVote = userVote
+    const newVote = previousVote === voteType ? null : voteType
+
+    // Optimistically update UI
+    updateVote(communityId, previousVote, newVote)
+
     try {
       const response = await fetch('/api/communities/vote', {
         method: 'POST',
@@ -27,6 +32,9 @@ export function VoteButton({ communityId, upvotes, downvotes, userVote, classNam
       })
 
       if (!response.ok) {
+        // Revert optimistic update on error
+        updateVote(communityId, newVote, previousVote)
+        
         const error = await response.json()
         if (response.status === 401) {
           toast.error("Please sign in to vote")
@@ -35,9 +43,12 @@ export function VoteButton({ communityId, upvotes, downvotes, userVote, classNam
         throw new Error(error.message)
       }
 
-      router.refresh()
+      // No need to refresh the page anymore
+      // router.refresh()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+      // Revert optimistic update on error
+      updateVote(communityId, newVote, previousVote)
       toast.error("Failed to register vote")
     }
   }
