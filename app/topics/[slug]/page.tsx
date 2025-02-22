@@ -57,10 +57,10 @@ export default async function TopicPage({ params }: TopicPageProps) {
   }) as CommunityWithStats[]
 
   return (
-    <div className="flex min-h-screen pt-16"> {/* Reduced from pt-20 to pt-16 */}
+    <div className="flex flex-col lg:flex-row min-h-screen pt-16">
       {/* Sidebar - extend above with negative margin */}
-      <aside className="w-1/3 bg-[#f3f1ea] p-8 sticky top-16 h-[calc(100vh-4rem)] -mt-16"> {/* Added -mt-16 to extend up */}
-        <div className="space-y-6">
+      <aside className="w-full lg:w-1/3 bg-[#f3f1ea] p-4 lg:p-8 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] -mt-16">
+        <div className="space-y-4 lg:space-y-6 pt-20 lg:pt-0">
           <Link href="/topics">
             <Button variant="ghost" className="bg-white/60 hover:bg-white/80">
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -94,9 +94,9 @@ export default async function TopicPage({ params }: TopicPageProps) {
       </aside>
 
       {/* Main Content - now 2/3 width */}
-      <main className="w-2/3 p-8">
-        <div className="space-y-8">
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8">
+      <main className="w-full lg:w-2/3 p-4 lg:p-8">
+        <div className="space-y-6 lg:space-y-8">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 lg:p-8">
             <h2 className="font-instrument-serif text-2xl text-gray-900 mb-6">
               Communities
             </h2>
