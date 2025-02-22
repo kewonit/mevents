@@ -59,7 +59,7 @@ export default function LandingPage() {
             </div>
           </Link>
 
-          <Link href="/city-topic">
+          <Link href="/topics/city">
             <div
               className="inline-flex items-center bg-black text-white rounded-[10px] hover:bg-black/90 transition-colors font-instrument-sans"
               style={{ width: "227px", height: "49px" }}
