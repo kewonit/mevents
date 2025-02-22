@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Topic } from "@/app/utils/db"
+import { Topic, TopicWithStats } from "@/app/utils/db"
 import Image from "next/image"
 import { ArrowUpDown, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -34,7 +34,7 @@ function ActionButton({ topic, colorIndex }: { topic: Topic; colorIndex: number 
       className={`
         ${colorClasses}
         px-4 h-9
-        font-instrument-serif font-bold
+        font-bold
         rounded-lg
         border
         shadow-sm
@@ -51,7 +51,7 @@ function ActionButton({ topic, colorIndex }: { topic: Topic; colorIndex: number 
   )
 }
 
-export const columns: ColumnDef<Topic>[] = [
+export const columns: ColumnDef<TopicWithStats>[] = [
   {
     id: "number",
     header: "#",
@@ -91,13 +91,14 @@ export const columns: ColumnDef<Topic>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="hover:bg-gray-100/50"
         >
           Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
-    size: 250,
+    size: 200,
     cell: ({ row }) => {
       const name = row.getValue("name") as string
       const colorIndex = row.index % pastelColors.length
@@ -126,11 +127,78 @@ export const columns: ColumnDef<Topic>[] = [
   {
     accessorKey: "description",
     header: "Description",
+    size: 300,
     cell: ({ row }) => {
       const description = row.getValue("description") as string
       return (
-        <div className="max-w-md truncate font-instrument-serif font-normal text-base">
+        <div className="max-w-md truncate text-base text-gray-600">
           {description || "No description available"}
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "total_communities",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-gray-100/50"
+      >
+        Communities
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    size: 120,
+    cell: ({ row }) => {
+      const count = row.getValue("total_communities") as number
+      return (
+        <div className="font-medium text-center bg-blue-50 text-blue-600 px-3 py-1 rounded-lg">
+          {count}
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "total_members",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-gray-100/50"
+      >
+        Members
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    size: 120,
+    cell: ({ row }) => {
+      const count = row.getValue("total_members") as number
+      return (
+        <div className="font-medium text-center bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg">
+          {new Intl.NumberFormat('en-US').format(count)}
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "total_votes",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-gray-100/50"
+      >
+        Votes
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    size: 120,
+    cell: ({ row }) => {
+      const count = row.getValue("total_votes") as number
+      return (
+        <div className="font-medium text-center bg-amber-50 text-amber-600 px-3 py-1 rounded-lg">
+          {new Intl.NumberFormat('en-US').format(count)}
         </div>
       )
     },

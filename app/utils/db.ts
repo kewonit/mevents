@@ -18,6 +18,12 @@ export interface Topic {
   created_at: string // ISO date string
 }
 
+export interface TopicWithStats extends Topic {
+  total_members: number
+  total_communities: number
+  total_votes: number
+}
+
 export interface Community {
   id: string
   topic_id: string

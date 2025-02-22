@@ -27,14 +27,15 @@ export function CommunityCard({ community }: CommunityCardProps) {
             {community.banner_url ? (
               <Image
                 src={community.banner_url}
-                alt={community.name}
+                alt={community.name + " banner"}
                 fill
                 className="object-cover opacity-90 transition-opacity"
                 draggable={false}
               />
             ) : (
-              <div className="h-full flex items-center justify-center">
+              <div className="h-full flex items-center justify-center bg-gray-200">
                 <Globe className="w-6 h-6 text-gray-400" />
+                <span className="text-xs text-gray-500 ml-1">No Banner</span>
               </div>
             )}
             <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/10" />
@@ -49,16 +50,16 @@ export function CommunityCard({ community }: CommunityCardProps) {
                   {community.logo_url ? (
                     <Image
                       src={community.logo_url}
-                      alt={community.name}
+                      alt={community.name + " logo"}
                       width={128}
                       height={128}
                       className="object-cover"
                       draggable={false}
                     />
                   ) : (
-                    <div className="w-full h-full bg-[#EBE9E0] flex items-center justify-center">
+                    <div className="w-full h-full bg-gray-100 flex items-center justify-center">
                       <span className="text-4xl font-bold text-gray-400">
-                        {community.name.charAt(0)}
+                        {community.name?.charAt(0) || "?"}
                       </span>
                     </div>
                   )}
@@ -77,14 +78,18 @@ export function CommunityCard({ community }: CommunityCardProps) {
             {/* Header Section */}
             <div className="mt-2 mb-3 pl-2">
               <h3 className="font-instrument-serif text-xl sm:text-2xl text-gray-900 font-bold leading-tight">
-                {community.name}
+                {community.name || "Unnamed Community"}
               </h3>
             </div>
 
             {/* Description */}
-            {community.description && (
+            {community.description ? (
               <p className="text-sm text-gray-600 leading-relaxed line-clamp-2 mb-4 pl-2">
                 {community.description}
+              </p>
+            ) : (
+              <p className="text-sm text-gray-500 leading-relaxed italic mb-4 pl-2">
+                No description provided.
               </p>
             )}
   
