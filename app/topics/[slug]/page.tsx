@@ -19,6 +19,10 @@ export default async function TopicPage({ params }: TopicPageProps) {
   const searchName = slug.replace(/-/g, ' ')
   
   const supabase = await createClient()
+  
+  // Get current user
+  const { data: { user } } = await supabase.auth.getUser()
+
   const { data: topicData, error } = await supabase
     .from('topics')
     .select('*')
@@ -42,17 +46,25 @@ export default async function TopicPage({ params }: TopicPageProps) {
     .select('community_id, vote_type')
     .in('community_id', (communities || []).map(c => c.id))
 
-  // Calculate stats
+  // Fetch user's votes if logged in
+  const { data: userVotes } = user ? await supabase
+    .from('community_votes')
+    .select('community_id, vote_type')
+    .eq('profile_id', user.id) : { data: null }
+
+  // Calculate stats and add user's vote
   const communitiesWithStats = (communities || []).map(community => {
     const communityVotes = votes?.filter(v => v.community_id === community.id) || []
     const upvotes = communityVotes.filter(v => v.vote_type === 'upvote').length
     const downvotes = communityVotes.filter(v => v.vote_type === 'downvote').length
+    const userVote = userVotes?.find(v => v.community_id === community.id)?.vote_type || null
 
     return {
       ...community,
       upvotes,
       downvotes,
-      vote_score: upvotes - downvotes
+      vote_score: upvotes - downvotes,
+      user_vote: userVote
     }
   }) as CommunityWithStats[]
 

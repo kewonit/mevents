@@ -1,8 +1,9 @@
 import { CommunityWithStats } from "@/app/utils/db"
 import { Badge } from "@/components/ui/badge"
-import { ArrowUpIcon, ArrowDownIcon, Users2Icon, ExternalLink, Globe } from "lucide-react"
+import { Users2Icon, ExternalLink, Globe } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { VoteButton } from "@/app/components/VoteButton"
 
 interface CommunityCardProps {
   community: CommunityWithStats
@@ -83,7 +84,7 @@ export function CommunityCard({ community }: CommunityCardProps) {
                 className="bg-blue-50/80 text-blue-600 px-2 sm:px-3 py-1 sm:py-1.5 text-sm rounded-lg flex items-center gap-1.5 hover:bg-blue-50 transition-colors self-start"
               >
                 <Users2Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                {community.member_count.toLocaleString()}
+                {new Intl.NumberFormat('en-US').format(community.member_count)}
               </Badge>
             </div>
 
@@ -96,16 +97,12 @@ export function CommunityCard({ community }: CommunityCardProps) {
 
             {/* Stats Bar */}
             <div className="flex items-center justify-between border-t border-gray-100 pt-3 mt-auto gap-2">
-              <div className="flex gap-2 sm:gap-3 text-xs sm:text-sm">
-                <span className="flex items-center gap-1 text-green-600 text-sm">
-                  <ArrowUpIcon className="h-4 w-4" />
-                  <span className="font-medium">{community.upvotes}</span>
-                </span>
-                <span className="flex items-center gap-1 text-red-600 text-sm">
-                  <ArrowDownIcon className="h-4 w-4" />
-                  <span className="font-medium">{community.downvotes}</span>
-                </span>
-              </div>
+              <VoteButton
+                communityId={community.id}
+                upvotes={community.upvotes}
+                downvotes={community.downvotes}
+                userVote={community.user_vote}
+              />
               <a
                 href={community.external_url || '#'}
                 target={community.external_url ? "_blank" : undefined}
