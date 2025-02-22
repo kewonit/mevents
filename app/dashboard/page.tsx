@@ -31,7 +31,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [activeTab, setActiveTab] = useState('communities'); // Changed default tab to 'communities'
+  const [activeTab, setActiveTab] = useState('communities'); 
 
   useEffect(() => {
     const checkAuth = async () => {
