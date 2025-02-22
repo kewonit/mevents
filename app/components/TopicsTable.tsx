@@ -1,8 +1,12 @@
+"use client"
+
+import { useState } from "react"
 import { TopicWithStats as Topic } from "../utils/db"
 import { AlertCircle, BookOpen, Search } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { TopicCard } from "./TopicCard"
 import { TopicCardSkeleton } from "./TopicCardSkeleton"
+import { Input } from "@/components/ui/input"
 
 type TopicsTableProps = {
   topics: Topic[]
@@ -11,6 +15,13 @@ type TopicsTableProps = {
 }
 
 export function TopicsTable({ topics, isLoading, error }: TopicsTableProps) {
+  const [searchQuery, setSearchQuery] = useState("")
+
+  const filteredTopics = topics.filter(topic => 
+    topic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    topic.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
   const renderContent = () => {
     if (error) {
       return (
@@ -43,28 +54,62 @@ export function TopicsTable({ topics, isLoading, error }: TopicsTableProps) {
     }
 
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 max-w-7xl mx-auto">
-        {topics.map((topic, index) => (
-          <TopicCard 
-            key={topic.id} 
-            topic={topic} 
-            index={index}
-          />
-        ))}
-        <div 
-          className={`
-            rounded-2xl border border-dashed border-gray-300
-            flex flex-col items-center justify-center p-8 
-            text-gray-500 bg-white/30 backdrop-blur-sm
-            min-h-[240px] // Match the height of other cards
-            hover:bg-white/40 transition-colors
-            cursor-default
-          `}
-        >
-          <div className="text-2xl font-semibold mb-2">🎉</div>
-          <p className="text-lg font-medium text-center">Hundreds More</p>
-          <p className="text-sm text-center mt-1">Coming Soon</p>
+      <div className="space-y-8">
+        {/* Enhanced Search Bar */}
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-pink-100 via-emerald-100 to-blue-100 rounded-2xl opacity-50 group-hover:opacity-70 blur transition-opacity" />
+            <div className="relative bg-white/80 backdrop-blur-sm rounded-xl shadow-sm">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-gray-600 transition-colors" />
+              <Input
+                type="search"
+                placeholder="Search topics by name or description..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="border-0 h-14 pl-12 bg-transparent placeholder:text-gray-400 focus-visible:ring-0 text-base"
+              />
+            </div>
+          </div>
         </div>
+
+        {/* Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 max-w-7xl mx-auto">
+          {filteredTopics.map((topic, index) => (
+            <TopicCard 
+              key={topic.id} 
+              topic={topic} 
+              index={index}
+            />
+          ))}
+          {/* Coming Soon Card with same styling as TopicCard */}
+          <div 
+            className={`
+              rounded-2xl border transition-all duration-200
+              flex flex-col min-h-[240px]
+              bg-white/30 backdrop-blur-sm border-gray-200
+              hover:shadow-lg hover:shadow-gray-200/50
+            `}
+          >
+            <div className="flex-1 p-4 flex flex-col items-center justify-center">
+              <div className="text-2xl font-semibold mb-2">🎉</div>
+              <p className="text-lg font-medium text-center text-gray-800">
+                Hundreds More
+              </p>
+              <p className="text-sm text-center mt-1 text-gray-600">
+                Coming Soon
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* No Results Message */}
+        {filteredTopics.length === 0 && searchQuery && (
+          <div className="text-center py-12">
+            <Search className="w-8 h-8 text-gray-400 mx-auto mb-3" />
+            <p className="text-lg font-medium text-gray-900">No topics found</p>
+            <p className="text-sm text-gray-600">Try adjusting your search terms</p>
+          </div>
+        )}
       </div>
     )
   }
