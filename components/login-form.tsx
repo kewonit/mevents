@@ -4,17 +4,12 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/utils/supabase/client";
 import { Toaster, toast } from "sonner";
-import { Krona_One } from 'next/font/google';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp"
-
-const krona = Krona_One({
-  subsets: ['latin'],
-  weight: '400',
-});
+import { instrumentSerif, instrumentSerifItalic, instrumentSans } from "@/utils/fonts";
 
 const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 const MAX_ATTEMPTS = 3;
@@ -154,25 +149,59 @@ export function LoginForm() {
 
       if (data?.session) {
         try {
-          const { error: profileError } = await supabase
+          // Check if profile exists and update email if needed
+          const { data: existingProfile, error: profileError } = await supabase
             .from('profiles')
-            .upsert({
-              id: data.session.user.id,
-              email: data.session.user.email,
-              updated_at: new Date().toISOString(),
-            }, {
-              onConflict: 'id'
-            });
-          
-          if (profileError) throw profileError;
-          
-          toast.success("Successfully logged in!");
+            .select('username, email')
+            .eq('id', data.session.user.id)
+            .single();
+
+          if (profileError && profileError.code !== 'PGRST116') {
+            throw profileError;
+          }
+
+          if (!existingProfile) {
+            // Create new profile if doesn't exist
+            const { error: insertError } = await supabase
+              .from('profiles')
+              .insert({
+                id: data.session.user.id,
+                email: email.toLowerCase().trim(),
+                username: `user_${data.session.user.id.substring(0, 8)}`,
+                updated_at: new Date().toISOString(),
+              });
+
+            if (insertError) throw insertError;
+            
+            router.push('/onboarding');
+            router.refresh();
+            return;
+          }
+
+          // Update email if it's different
+          if (existingProfile.email !== email.toLowerCase().trim()) {
+            const { error: updateError } = await supabase
+              .from('profiles')
+              .update({
+                email: email.toLowerCase().trim(),
+                updated_at: new Date().toISOString(),
+              })
+              .eq('id', data.session.user.id);
+
+            if (updateError) throw updateError;
+          }
+
+          if (!existingProfile.username || existingProfile.username.startsWith('user_')) {
+            router.push('/onboarding');
+            router.refresh();
+            return;
+          }
+
           router.push('/dashboard');
           router.refresh();
-        } catch (profileError) {
-          console.error("Profile update failed:", profileError);
-          toast.error("Login successful but profile update failed");
-          router.push('/dashboard');
+        } catch (error) {
+          console.error("Profile operation failed:", error);
+          router.push('/onboarding');
           router.refresh();
         }
         return;
@@ -192,124 +221,132 @@ export function LoginForm() {
   return (
     <>
       <Toaster position="top-right" richColors />
-      <div className="p-2 sm:p-4 lg:p-8 mx-auto max-w-2xl bg-[#EBE9E0]">
-        <div className="p-3 sm:p-4 border-4 border-dashed border-gray-300 rounded-[2rem]">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 relative">
-            {/* Ticket effect dots */}
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 sm:w-4 h-6 sm:h-8 bg-[#EBE9E0] rounded-r-full"></div>
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 sm:w-4 h-6 sm:h-8 bg-[#EBE9E0] rounded-l-full"></div>
+      <div className={`min-h-screen w-full bg-gradient-to-b from-[#f3f1ea] to-[#E5DFD0] flex items-center justify-center py-12 px-4 ${instrumentSerif.variable} ${instrumentSerifItalic.variable} ${instrumentSans.variable}`}>
+        <div className="w-full max-w-2xl relative">
+          {/* Decorative elements */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#DCD5C1] opacity-20 rounded-3xl" />
+          
+          <div className="p-3 sm:p-4 border-2 border-[#DCD5C1] rounded-2xl backdrop-blur-sm bg-white/30 relative z-10">
+            <div className="bg-white/95 rounded-xl shadow-sm overflow-hidden border border-[#E5DFD0] relative">
+              {/* Ticket effect dots */}
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 sm:w-4 h-6 sm:h-8 bg-[#f3f1ea] rounded-r-full"></div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 sm:w-4 h-6 sm:h-8 bg-[#f3f1ea] rounded-l-full"></div>
 
-            <div className="p-6 sm:p-8 bg-gradient-to-br from-white to-gray-50">
-              <div className={`${krona.className} text-center mb-8`}>
-                <span className="inline-block px-2 py-1 rounded-full bg-blue-50 text-blue-600 text-[10px] sm:text-xs font-medium tracking-wide uppercase mb-3">
-                  Blazingly Fast Secure Login
-                </span>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Welcome to Spectrum&apos;25</h1>
-                <p className="text-sm text-gray-600">Your gateway to innovation</p>
-              </div>
-
-              {error && (
-                <div role="alert" aria-live="assertive" className="mb-6 p-3 bg-red-50 text-red-700 rounded-lg border border-red-100">
-                  {error}
+              <div className="p-6 sm:p-8 bg-gradient-to-br from-white to-gray-50">
+                <div className="text-center mb-8">
+                  <p className="font-instrument-sans uppercase tracking-[0.51em] leading-[133%] text-[14px] sm:text-[16px] text-gray-800 mb-2">
+                    Welcome to Kommodex
+                  </p>
+                  <p className="text-sm text-gray-600 font-instrument-sans">Your community discovery platform</p>
                 </div>
-              )}
 
-              {!showVerification ? (
-                <form onSubmit={handleSendEmail} className="space-y-6">
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
-                      placeholder="Enter your email"
-                      required
-                    />
+                {error && (
+                  <div role="alert" aria-live="assertive" className="mb-6 p-3 bg-red-50 text-red-700 rounded-lg border border-red-100">
+                    {error}
                   </div>
+                )}
 
-                  <div className="border-t-2 border-dashed border-gray-200 my-6"></div>
-
-                  <button
-                    type="submit"
-                    disabled={loading || cooldown > 0}
-                    className="w-full py-3 text-base font-medium bg-blue-50 hover:bg-blue-100 text-blue-600 transition-all duration-300 rounded-lg flex items-center justify-between px-6 group disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <span>{loading ? "Sending..." : cooldown > 0 ? `Resend in ${cooldown}s` : "Send Code"}</span>
-                    <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </button>
-                </form>
-              ) : (
-                <form onSubmit={handleVerifyToken} className="space-y-6">
-                  {success && (
-                    
-                    <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-lg border border-green-100">
-                      <p className="font-medium">Check your inbox!</p>
-                      <p className="text-sm mt-1">We&apos;ve sent a code to {email}</p>
-                      <p className="text-xs sm:text-sm text-yellow-800 mt-3 sm:mt-2">
-                            It might take upto 15-30 seconds for the email to arrive!
-                      </p>
+                {!showVerification ? (
+                  <form onSubmit={handleSendEmail} className="space-y-6">
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1 font-instrument-sans">Email Address</label>
+                      <input
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full p-3 border border-[#DCD5C1] rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-all bg-white font-instrument-sans"
+                        placeholder="Enter your email"
+                        required
+                      />
                     </div>
-                  )}
-                  <div>
-                    <label htmlFor="token" className="block text-sm font-medium text-gray-700 mb-3">
-                      Verification Code
-                    </label>
-                    <div className="flex justify-center">
-                      <InputOTP
-                        maxLength={6}
-                        value={token}
-                        onChange={(value) => setToken(value)}
-                      >
-                        <InputOTPGroup>
-                          <InputOTPSlot index={0} />
-                          <InputOTPSlot index={1} />
-                          <InputOTPSlot index={2} />
-                          <InputOTPSlot index={3} />
-                          <InputOTPSlot index={4} />
-                          <InputOTPSlot index={5} />
-                        </InputOTPGroup>
-                      </InputOTP>
-                    </div>
-                  </div>
 
-                  <div className="border-t-2 border-dashed border-gray-200 my-6"></div>
+                    <div className="border-t-2 border-dashed border-[#E5DFD0] my-6"></div>
 
-                  <button
-                    type="submit"
-                    disabled={loading || token.length !== 6}
-                    className="w-full py-3 text-base font-medium bg-blue-50 hover:bg-blue-100 text-blue-600 transition-all duration-300 rounded-lg flex items-center justify-between px-6 group disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <span>{loading ? "Verifying..." : "Verify Code"}</span>
-                    <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </button>
-
-                  <div className="flex flex-col gap-2 text-center">
                     <button
-                      type="button"
-                      onClick={() => setShowVerification(false)}
-                      className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
-                    >
-                      ← Use a different email
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleSendEmail}
+                      type="submit"
                       disabled={loading || cooldown > 0}
-                      className="text-sm text-blue-600 hover:text-blue-800 disabled:text-gray-400 transition-colors"
+                      className="w-full py-3 text-base font-medium bg-black hover:bg-black/90 text-white transition-all duration-300 rounded-lg flex items-center justify-between px-6 group disabled:opacity-50 disabled:cursor-not-allowed font-instrument-sans"
                     >
-                      {cooldown > 0 ? `Resend code in ${cooldown}s` : "Resend code"}
+                      <span>{loading ? "Sending..." : cooldown > 0 ? `Resend in ${cooldown}s` : "Send Code"}</span>
+                      <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
                     </button>
-                  </div>
-                </form>
-              )}
+                  </form>
+                ) : (
+                  <form onSubmit={handleVerifyToken} className="space-y-6">
+                    {success && (
+                      
+                      <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-lg border border-green-100">
+                        <p className="font-medium">Check your inbox!</p>
+                        <p className="text-sm mt-1">We&apos;ve sent a code to {email}</p>
+                        <p className="text-xs sm:text-sm text-yellow-800 mt-3 sm:mt-2">
+                              It might take upto 15-30 seconds for the email to arrive!
+                        </p>
+                      </div>
+                    )}
+                    <div>
+                      <label htmlFor="token" className="block text-sm font-medium text-gray-700 mb-3">
+                        Verification Code
+                      </label>
+                      <div className="flex justify-center">
+                        <InputOTP
+                          maxLength={6}
+                          value={token}
+                          onChange={(value) => setToken(value)}
+                        >
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                      </div>
+                    </div>
+
+                    <div className="border-t-2 border-dashed border-gray-200 my-6"></div>
+
+                    <button
+                      type="submit"
+                      disabled={loading || token.length !== 6}
+                      className="w-full py-3 text-base font-medium bg-black hover:bg-black/90 text-white transition-all duration-300 rounded-lg flex items-center justify-between px-6 group disabled:opacity-50 disabled:cursor-not-allowed font-instrument-sans"
+                    >
+                      <span>{loading ? "Verifying..." : "Verify Code"}</span>
+                      <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </button>
+
+                    <div className="flex flex-col gap-2 text-center">
+                      <button
+                        type="button"
+                        onClick={() => setShowVerification(false)}
+                        className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                      >
+                        ← Use a different email
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSendEmail}
+                        disabled={loading || cooldown > 0}
+                        className="text-sm text-blue-600 hover:text-blue-800 disabled:text-gray-400 transition-colors"
+                      >
+                        {cooldown > 0 ? `Resend code in ${cooldown}s` : "Resend code"}
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
             </div>
           </div>
+          
+          {/* Optional: Add subtle decorative circles */}
+          <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#DCD5C1] rounded-full opacity-20 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-[#DCD5C1] rounded-full opacity-20 blur-3xl" />
         </div>
       </div>
     </>
