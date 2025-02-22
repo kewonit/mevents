@@ -56,35 +56,54 @@ export default async function TopicPage({ params }: TopicPageProps) {
     }
   }) as CommunityWithStats[]
 
-  console.log('Communities found:', communities?.length)
-  console.log('Votes found:', votes?.length)
-
   return (
-    <div className="container mx-auto px-4 py-24 min-h-screen">
-      <div className="mb-8">
-        <Link href="/topics">
-          <Button variant="ghost" className="bg-[#f3f1ea] hover:bg-[#e0d8c3]">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Topics
-          </Button>
-        </Link>
-      </div>
-      <div className="space-y-8">
-        <div></div>
-          <h1 className="font-instrument-serif text-4xl text-gray-900 mb-4">
-            {topicData.name}
-          </h1>
-          <p className="text-gray-600">
-            {topicData.description}
-          </p>
+    <div className="flex min-h-screen pt-20"> {/* Added pt-20 for navbar space */}
+      {/* Sidebar - now 1/3 width */}
+      <aside className="w-1/3 bg-[#f3f1ea] p-8 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto"> {/* Adjusted top and height */}
+        <div className="space-y-6">
+          <Link href="/topics">
+            <Button variant="ghost" className="bg-white/60 hover:bg-white/80">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Topics
+            </Button>
+          </Link>
+          
+          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 space-y-4">
+            <h1 className="font-instrument-serif text-4xl text-gray-900">
+              {topicData.name}
+            </h1>
+            <p className="text-gray-600">
+              {topicData.description}
+            </p>
+          </div>
+          
+          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6">
+            <h3 className="text-sm font-medium text-gray-500 mb-4">Quick Stats</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white p-4 rounded-xl">
+                <div className="text-2xl font-bold">{communities?.length || 0}</div>
+                <div className="text-sm text-gray-500">Communities</div>
+              </div>
+              <div className="bg-white p-4 rounded-xl">
+                <div className="text-2xl font-bold">{votes?.length || 0}</div>
+                <div className="text-sm text-gray-500">Total Votes</div>
+              </div>
+            </div>
+          </div>
         </div>
-        
-        <div className="mt-12">
-          <h2 className="font-instrument-serif text-2xl text-gray-900 mb-6">
-            Communities
-          </h2>
-          <CommunityGrid communities={communitiesWithStats} />
+      </aside>
+
+      {/* Main Content - now 2/3 width */}
+      <main className="w-2/3 p-8">
+        <div className="space-y-8">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8">
+            <h2 className="font-instrument-serif text-2xl text-gray-900 mb-6">
+              Communities
+            </h2>
+            <CommunityGrid communities={communitiesWithStats} />
+          </div>
         </div>
-      </div>
+      </main>
+    </div>
   )
 }
