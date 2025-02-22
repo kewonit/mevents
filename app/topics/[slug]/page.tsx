@@ -57,9 +57,9 @@ export default async function TopicPage({ params }: TopicPageProps) {
   }) as CommunityWithStats[]
 
   return (
-    <div className="flex min-h-screen pt-20"> {/* Added pt-20 for navbar space */}
-      {/* Sidebar - now 1/3 width */}
-      <aside className="w-1/3 bg-[#f3f1ea] p-8 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto"> {/* Adjusted top and height */}
+    <div className="flex min-h-screen pt-16"> {/* Reduced from pt-20 to pt-16 */}
+      {/* Sidebar - extend above with negative margin */}
+      <aside className="w-1/3 bg-[#f3f1ea] p-8 sticky top-16 h-[calc(100vh-4rem)] -mt-16"> {/* Added -mt-16 to extend up */}
         <div className="space-y-6">
           <Link href="/topics">
             <Button variant="ghost" className="bg-white/60 hover:bg-white/80">
