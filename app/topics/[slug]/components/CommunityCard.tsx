@@ -12,17 +12,17 @@ export function CommunityCard({ community }: CommunityCardProps) {
   return (
     <div className="group">
       <div className="bg-[#EBE9E0]/40 backdrop-blur-sm border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 flex flex-col relative">
-        {/* Community Type Badge - New vertical badge */}
-        <div className="absolute left-0 top-0 bottom-0 w-20 bg-[#EBE9E0] flex items-center justify-center z-10 border-r border-gray-200">
-          <div className="rotate-180 whitespace-nowrap [writing-mode:vertical-lr] text-gray-600 font-medium tracking-wide uppercase text-sm">
+        {/* Community Type Badge - even thinner */}
+        <div className="absolute left-0 top-0 bottom-0 w-10 bg-[#EBE9E0] flex items-center justify-center z-10 border-r border-gray-200">
+          <div className="rotate-180 whitespace-nowrap [writing-mode:vertical-lr] text-gray-600 font-medium tracking-wide uppercase text-xs">
             {community.type}
           </div>
         </div>
 
-        {/* Main Content Wrapper - added left margin for type badge */}
-        <div className="ml-20 flex-1 flex flex-col">
-          {/* Banner Section */}
-          <div className="relative w-full h-48">
+        {/* Main Content Wrapper - adjusted margin for thinner type badge */}
+        <div className="ml-10 flex-1 flex flex-col">
+          {/* Banner Section - reduced height further */}
+          <div className="relative w-full h-32">
             {community.banner_url ? (
               <Image
                 src={community.banner_url}
@@ -38,10 +38,10 @@ export function CommunityCard({ community }: CommunityCardProps) {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60" />
           </div>
 
-          {/* Content Section */}
-          <div className="relative p-8 pb-16">
-            {/* Logo/Avatar */}
-            <div className="absolute -top-20 left-8">
+          {/* Content Section - reduced padding */}
+          <div className="relative p-5 pb-12">
+            {/* Logo/Avatar - adjusted position */}
+            <div className="absolute -top-14 left-6">
               <div className="rounded-2xl overflow-hidden border-4 border-white shadow-lg w-32 h-32">
                 {community.logo_url ? (
                   <Image
@@ -61,8 +61,8 @@ export function CommunityCard({ community }: CommunityCardProps) {
               </div>
             </div>
 
-            {/* Main Content - Reorganized layout */}
-            <div className="space-y-6">
+            {/* Main Content */}
+            <div className="space-y-3">
               {/* Title section next to logo */}
               <div className="ml-40 flex justify-between items-start">
                 <h3 className="font-instrument-serif text-3xl text-gray-900 tracking-tight font-bold">
@@ -76,10 +76,10 @@ export function CommunityCard({ community }: CommunityCardProps) {
                 </Badge>
               </div>
 
-              {/* Description below logo */}
-              <div className="mt-4">
+              {/* Description - added line clamp */}
+              <div className="mt-2">
                 {community.description && (
-                  <p className="font-instrument-serif text-base text-gray-600 leading-relaxed max-w-3xl">
+                  <p className="font-instrument-serif text-base text-gray-600 leading-relaxed line-clamp-2">
                     {community.description}
                   </p>
                 )}
@@ -89,8 +89,8 @@ export function CommunityCard({ community }: CommunityCardProps) {
 
           {/* Vote Stats + Button Section */}
           <div className="mt-auto">
-            {/* Vote Stats */}
-            <div className="flex justify-end gap-3 px-6 py-3 border-t border-gray-200">
+            {/* Vote Stats - adjusted padding */}
+            <div className="flex justify-end gap-2 px-4 py-1.5 border-t border-gray-200">
               <span className="flex items-center gap-1.5 text-green-600 bg-green-50 px-3 py-1.5 rounded-lg">
                 <ArrowUpIcon className="h-5 w-5" />
                 <span className="font-bold">{community.upvotes}</span>
@@ -101,11 +101,11 @@ export function CommunityCard({ community }: CommunityCardProps) {
               </span>
             </div>
 
-            {/* Join Button */}
-            <div className="border-t border-gray-200">
+            {/* Join Button - increased width by adjusting parent padding */}
+            <div className="border-t border-gray-200 px-4"> {/* Added px-4 padding */}
               <Button
                 variant="outline"
-                className="w-full rounded-none h-12 bg-[#EBE9E0]/50 hover:bg-[#EBE9E0] border-0 text-gray-700 hover:text-gray-900 font-bold"
+                className="w-[calc(100%+2rem)] -mx-4 rounded-none h-9 bg-[#EBE9E0]/50 hover:bg-[#EBE9E0] border-0 text-gray-700 hover:text-gray-900 font-bold"
               >
                 Join Community
               </Button>
