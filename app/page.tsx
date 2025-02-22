@@ -36,27 +36,52 @@ export default function LandingPage() {
           you&apos;d normally spend weeks uncovering.
         </p>
 
-        <Link href="/topics" style={{ marginTop: "-2px" }}>
-          <div
-            className="inline-flex items-center bg-black text-white rounded-[10px] hover:bg-black/90 transition-colors font-instrument-sans"
-            style={{ width: "227px", height: "49px" }}
-          >
-            <div className="flex items-center justify-between w-full pl-[22px] pr-[17px]">
-              <span className="text-[16px] sm:text-[19px] whitespace-nowrap">Try Now</span>
-              <div className="flex items-center gap-[14px]">
-                <div className="w-[36px] h-[15px] relative">
-                  <Image
-                    src="https://res.cloudinary.com/ducqjmtlk/image/upload/v1737918196/Arrow_1_tacbar.svg"
-                    alt="Arrow"
-                    width={36}
-                    height={15}
-                    className="object-contain"
-                  />
+        <div className="flex gap-4">
+          <Link href="/topics">
+            <div
+              className="inline-flex items-center bg-black text-white rounded-[10px] hover:bg-black/90 transition-colors font-instrument-sans"
+              style={{ width: "227px", height: "49px" }}
+            >
+              <div className="flex items-center justify-between w-full pl-[22px] pr-[17px]">
+                <span className="text-[16px] sm:text-[19px] whitespace-nowrap">Try Index</span>
+                <div className="flex items-center gap-[14px]">
+                  <div className="w-[36px] h-[15px] relative">
+                    <Image
+                      src="https://res.cloudinary.com/ducqjmtlk/image/upload/v1737918196/Arrow_1_tacbar.svg"
+                      alt="Arrow"
+                      width={36}
+                      height={15}
+                      className="object-contain"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+
+          <Link href="/city-topic">
+            <div
+              className="inline-flex items-center bg-black text-white rounded-[10px] hover:bg-black/90 transition-colors font-instrument-sans"
+              style={{ width: "227px", height: "49px" }}
+            >
+              <div className="flex items-center justify-between w-full pl-[22px] pr-[17px]">
+                <span className="text-[16px] sm:text-[19px] whitespace-nowrap">Visit City Topic</span>
+                <div className="flex items-center gap-[14px]">
+                  <div className="w-[36px] h-[15px] relative">
+                    <Image
+                      src="https://res.cloudinary.com/ducqjmtlk/image/upload/v1737918196/Arrow_1_tacbar.svg"
+                      alt="Arrow"
+                      width={36}
+                      height={15}
+                      className="object-contain"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+
       </div>
       {/* 
         <div className="relative w-full">
