@@ -8,14 +8,7 @@ import { ProfileHeader } from "@/components/profile-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { instrumentSerif, instrumentSerifItalic, instrumentSans } from "@/utils/fonts";
-import { LogOut, Settings, Building2, Clock } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Building2, Clock, ArrowRight, Info } from "lucide-react";
 
 interface Profile {
   id: string;
@@ -67,6 +60,7 @@ export default function DashboardPage() {
       if (error) throw error;
       router.push('/');
       router.refresh();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(error.message || 'Failed to sign out');
     }
@@ -103,10 +97,19 @@ export default function DashboardPage() {
       default: // Make communities the default case
         return (
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-instrument-serif">My Communities</h2>
-              <Button variant="outline" size="sm" className="font-instrument-sans">
-                Create Community
+            <h2 className="text-xl font-instrument-serif">My Communities</h2>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <div className="bg-red-50 border border-red-200 text-red-600 p-2 rounded mb-2 sm:mb-0">
+                Create Community is coming soon for public release, and only verified community moderators are allowed to add it for now.
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="font-instrument-sans"
+                title="Only verified community moderators can add a community."
+              >
+                Create Community (Coming Soon)
+                <Info className="w-4 h-4 ml-2" />
               </Button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -117,7 +120,12 @@ export default function DashboardPage() {
                 <p className="font-instrument-sans text-sm text-gray-600 mb-4">
                   Create or join communities to get started
                 </p>
-                <Button variant="outline" size="sm" className="font-instrument-sans">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="font-instrument-sans"
+                  onClick={() => router.push('/topics')}
+                >
                   Browse Communities
                 </Button>
               </div>
@@ -166,35 +174,14 @@ export default function DashboardPage() {
               <h3 className="font-instrument-serif text-lg">Account Settings</h3>
               <p className="text-sm text-gray-600 font-instrument-sans">Manage your account preferences</p>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="font-instrument-sans border-[#DCD5C1] hover:bg-[#f3f1ea]/50 hover:border-[#DCD5C1] transition-colors"
-                >
-                  <Settings className="w-4 h-4 mr-2" />
-                  Options
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                align="end" 
-                className="w-48 bg-white/95 backdrop-blur-sm border-[#DCD5C1]"
-              >
-                <DropdownMenuItem className="font-instrument-sans hover:bg-[#f3f1ea]/50 transition-colors">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-[#DCD5C1]" />
-                <DropdownMenuItem 
-                  className="text-red-600 font-instrument-sans hover:bg-red-50/80 transition-colors"
-                  onClick={handleSignOut}
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleSignOut}
+              className="font-instrument-sans border-red-600 text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
+            >
+              Sign out <ArrowRight className="w-4 h-4" />
+            </Button>
           </div>
         </div>
 

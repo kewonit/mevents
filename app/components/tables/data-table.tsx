@@ -61,9 +61,9 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-6">
       {/* Search and Stats Bar */}
-      <div className="flex flex-col sm:flex-row items-center gap-6 py-6 px-2">
+      <div className="flex flex-col sm:flex-row items-center gap-6 py-6 px-4">
         <div className="relative w-full sm:w-auto flex-1 max-w-md">
-          <div className={`absolute inset-0 -m-2 rounded-xl transition-colors duration-200 ${searchFocused ? 'bg-emerald-50/50' : 'bg-transparent'}`} />
+          <div className={`absolute inset-0 -m-2 rounded-xl transition-colors duration-200 ${searchFocused ? 'bg-emerald-100/50' : 'bg-transparent'}`} />
           <div className="relative">
             <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-200 ${searchFocused ? 'text-emerald-600' : 'text-gray-400'}`} />
             <Input
@@ -74,20 +74,17 @@ export function DataTable<TData, TValue>({
               }
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
-              className="pl-9 bg-white/80 backdrop-blur-sm border-gray-200 rounded-lg 
-                focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400
-                transition-all duration-200"
+              className="pl-9 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400 transition-all duration-200"
             />
           </div>
         </div>
-        <div className="text-sm font-medium text-gray-500 bg-white/80 backdrop-blur-sm 
-          px-4 py-2 rounded-lg border border-gray-200">
+        <div className="text-sm font-medium text-gray-700 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-200">
           {table.getFilteredRowModel().rows.length} topics found
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -97,7 +94,7 @@ export function DataTable<TData, TValue>({
                     <TableHead 
                       key={header.id}
                       style={{ width: header.getSize() }}
-                      className="text-gray-600 font-medium bg-gray-50/80 px-6 py-4"
+                      className="text-gray-700 font-medium bg-gray-50 px-6 py-4"
                     >
                       {header.isPlaceholder
                         ? null
@@ -146,8 +143,8 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Pagination */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 px-2 py-4">
-        <div className="flex-1 text-sm text-gray-500">
+      <div className="flex flex-col sm:flex-row items-center gap-4 px-4 py-4">
+        <div className="flex-1 text-sm text-gray-700">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
         </div>
@@ -157,7 +154,7 @@ export function DataTable<TData, TValue>({
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="bg-white/80 backdrop-blur-sm hover:bg-gray-50"
+            className="bg-white/90 backdrop-blur-sm hover:bg-gray-50 border border-gray-200"
           >
             <ChevronLeft className="w-4 h-4 mr-1" />
             Previous
@@ -171,8 +168,8 @@ export function DataTable<TData, TValue>({
                 onClick={() => table.setPageIndex(i)}
                 className={`w-8 ${
                   table.getState().pagination.pageIndex === i 
-                    ? 'bg-emerald-500 hover:bg-emerald-600' 
-                    : 'bg-white/80 backdrop-blur-sm hover:bg-gray-50'
+                    ? 'bg-emerald-500 hover:bg-emerald-600 text-white' 
+                    : 'bg-white/90 backdrop-blur-sm hover:bg-gray-50 border border-gray-200'
                 }`}
               >
                 {i + 1}
@@ -184,7 +181,7 @@ export function DataTable<TData, TValue>({
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="bg-white/80 backdrop-blur-sm hover:bg-gray-50"
+            className="bg-white/90 backdrop-blur-sm hover:bg-gray-50 border border-gray-200"
           >
             Next
             <ChevronRight className="w-4 h-4 ml-1" />
