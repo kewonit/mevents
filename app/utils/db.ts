@@ -11,11 +11,11 @@ export interface Profile {
 }
 
 export interface Topic {
-  id: string
+  id: string // UUID is stored as string in TypeScript
   name: string
   description: string | null
   icon_url: string | null
-  created_at: string
+  created_at: string // ISO date string
 }
 
 export interface Community {
