@@ -70,7 +70,7 @@ export default function LandingPage() {
         </h1>
 
         <p className="text-[18px] sm:text-[22px] md:text-[28px] text-center font-instrument-sans font-light px-4 lg:px-[314px] mt-[25px] mb-[48px] leading-[133%] text-gray-800">
-          KOMMODEX indexes communities across India
+          kommodex indexes communities across India
           <br className="hidden md:inline" />
           you&apos;d normally spend weeks uncovering.
         </p>
