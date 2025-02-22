@@ -4,8 +4,9 @@ import { useState } from "react"
 import { TopicWithStats as Topic } from "../utils/db"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { ArrowRight, AlertCircle } from "lucide-react"
+import { ArrowRight, AlertCircle, Loader2 } from "lucide-react" // Add this import
 import { cn } from "@/lib/utils"
+import { LoadingOverlay } from "./LoadingOverlay"
 
 const pastelColors = [
   "bg-pink-50/80 hover:bg-pink-100/60 text-pink-600/90 border-pink-200/60",
@@ -29,97 +30,109 @@ export function TopicCard({ topic, index }: { topic: Topic; index: number }) {
       const response = await fetch(`/api/topics/slug?name=${encodeURIComponent(topic.name)}`)
       if (!response.ok) throw new Error('Failed to get topic slug')
       const { slug } = await response.json()
-      router.push(`/topics/${slug}`)
+      
+      // Show loading overlay before navigation
+      document.body.style.overflow = 'hidden'
+      await router.push(`/topics/${slug}`)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError(true)
-      // Reset error state after 3 seconds
       setTimeout(() => setError(false), 3000)
     } finally {
       setIsLoading(false)
+      document.body.style.overflow = ''
     }
   }
 
   return (
-    <div 
-      className={cn(
-        colorClasses,
-        "rounded-2xl border transition-all duration-200 cursor-pointer",
-        "hover:shadow-lg hover:shadow-current/5",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current",
-        isLoading && "animate-pulse pointer-events-none",
-        error && "animate-shake",
-        "flex flex-col min-h-[240px]" // Added min-height and flex
-      )}
-      onClick={handleClick}
-      tabIndex={0}
-      role="button"
-      aria-disabled={isLoading}
-      onKeyDown={(e) => e.key === 'Enter' && handleClick()}
-    >
-      {/* Main content area */}
-      <div className="flex-1 p-4">
-        {/* Icon and Name */}
-        <div className="flex items-start gap-4 mb-4">
-          <div className="relative h-12 w-12 rounded-xl overflow-hidden bg-white/50 shrink-0">
-            {topic.icon_url ? (
-              <Image
-                src={topic.icon_url}
-                alt={topic.name}
-                fill
-                className="object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = "https://via.placeholder.com/48"
-                }}
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-white/80">
-                {topic.name.charAt(0).toUpperCase()}
-              </div>
-            )}
+    <>
+      <LoadingOverlay isLoading={isLoading} />
+      <div 
+        className={cn(
+          colorClasses,
+          "rounded-2xl border transition-all duration-200",
+          "hover:shadow-lg hover:shadow-current/5",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current",
+          "flex flex-col min-h-[240px]",
+          isLoading ? "pointer-events-none" : "cursor-pointer"
+        )}
+        onClick={handleClick}
+        tabIndex={0}
+        role="button"
+        aria-disabled={isLoading}
+        onKeyDown={(e) => e.key === 'Enter' && handleClick()}
+      >
+        {/* Main content area */}
+        <div className={cn(
+          "flex-1 p-4",
+          isLoading && "opacity-50"
+        )}>
+          {/* Icon and Name */}
+          <div className="flex items-start gap-4 mb-4">
+            <div className="relative h-12 w-12 rounded-xl overflow-hidden bg-white/50 shrink-0">
+              {topic.icon_url ? (
+                <Image
+                  src={topic.icon_url}
+                  alt={topic.name}
+                  fill
+                  className="object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = "https://via.placeholder.com/48"
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-white/80">
+                  {topic.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-1 break-words">{topic.name}</h3>
+              <p className="text-sm opacity-90 line-clamp-2">
+                {topic.description || "No description available"}
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-1 break-words">{topic.name}</h3>
-            <p className="text-sm opacity-90 line-clamp-2">
-              {topic.description || "No description available"}
-            </p>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-2">
+            <StatBadge 
+              label="Communities" 
+              value={topic.total_communities} 
+              className="bg-white/60"
+            />
+            <StatBadge 
+              label="Members" 
+              value={topic.total_members} 
+              className="bg-white/60"
+            />
+            <StatBadge 
+              label="Votes" 
+              value={topic.total_votes} 
+              className="bg-white/60"
+            />
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-2">
-          <StatBadge 
-            label="Communities" 
-            value={topic.total_communities} 
-            className="bg-white/60"
-          />
-          <StatBadge 
-            label="Members" 
-            value={topic.total_members} 
-            className="bg-white/60"
-          />
-          <StatBadge 
-            label="Votes" 
-            value={topic.total_votes} 
-            className="bg-white/60"
-          />
+        {/* View Communities Button - Now with loading state */}
+        <div className="mt-auto border-t border-current/10">
+          <div className="px-4 py-3 flex items-center justify-between text-sm font-medium hover:bg-black/5 transition-colors">
+            <span className="flex items-center gap-2">
+              {error && <AlertCircle className="w-4 h-4" />}
+              {isLoading && (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              )}
+              {error ? 'Try again' : isLoading ? 'Loading...' : 'View Communities'}
+            </span>
+            <ArrowRight className={cn(
+              "w-4 h-4 transition-transform",
+              !isLoading && "group-hover:translate-x-1",
+              isLoading && "opacity-50"
+            )} />
+          </div>
         </div>
       </div>
-
-      {/* View Communities Button - Now properly aligned at bottom */}
-      <div className="mt-auto border-t border-current/10">
-        <div className="px-4 py-3 flex items-center justify-between text-sm font-medium hover:bg-black/5 transition-colors">
-          <span className="flex items-center gap-2">
-            {error && <AlertCircle className="w-4 h-4" />}
-            {error ? 'Try again' : 'View Communities'}
-          </span>
-          <ArrowRight className={cn(
-            "w-4 h-4 transition-transform",
-            !isLoading && "group-hover:translate-x-1"
-          )} />
-        </div>
-      </div>
-    </div>
+    </>
   )
 }
 
