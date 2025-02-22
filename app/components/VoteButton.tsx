@@ -2,7 +2,6 @@
 
 import { cn } from "@/lib/utils"
 import { ArrowUpIcon, ArrowDownIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { VoteType } from "../utils/db"
 import { Button } from "@/components/ui/button"
