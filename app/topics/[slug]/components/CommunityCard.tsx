@@ -1,6 +1,6 @@
 import { CommunityWithStats } from "@/app/utils/db"
 import { Badge } from "@/components/ui/badge"
-import { Users2Icon, ExternalLink, Globe } from "lucide-react"
+import { Users2Icon, Globe } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { VoteButton } from "@/app/components/VoteButton"
@@ -11,8 +11,8 @@ interface CommunityCardProps {
 
 export function CommunityCard({ community }: CommunityCardProps) {
   return (
-    <div className="group">
-      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 flex flex-col relative hover:shadow-lg">
+    <div>
+      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden flex flex-col relative">
         {/* Community Type Badge */}
         <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-8 bg-[#f8f7f4] flex items-center justify-center z-10 border-r border-gray-100">
           <div className="rotate-180 whitespace-nowrap [writing-mode:vertical-lr] text-gray-500 font-medium tracking-wider uppercase text-xs">
@@ -29,7 +29,8 @@ export function CommunityCard({ community }: CommunityCardProps) {
                 src={community.banner_url}
                 alt={community.name}
                 fill
-                className="object-cover opacity-90 hover:opacity-100 transition-opacity"
+                className="object-cover opacity-90 transition-opacity"
+                draggable={false}
               />
             ) : (
               <div className="h-full flex items-center justify-center">
@@ -40,61 +41,53 @@ export function CommunityCard({ community }: CommunityCardProps) {
           </div>
 
           {/* Content Area */}
-          <div className="relative px-3 sm:px-5 pt-12 pb-4">
-            {/* Logo */}
-            <div className="absolute -top-10 sm:-top-12 left-0">
-              <div className="rounded-xl overflow-hidden border-2 border-white shadow-md w-20 h-20 sm:w-24 sm:h-24 bg-white">
-                {community.logo_url ? (
-                  <Image
-                    src={community.logo_url}
-                    alt={community.name}
-                    width={128}
-                    height={128}
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-[#EBE9E0] flex items-center justify-center">
-                    <span className="text-4xl font-bold text-gray-400">
-                      {community.name.charAt(0)}
-                    </span>
-                  </div>
-                )}
+          <div className="relative px-6 sm:px-8 pt-14 pb-4">
+            {/* Logo and Member Count Section */}
+            <div className="absolute -top-10 sm:-top-12 w-[calc(100%-3.5rem)] flex justify-between items-center">
+              <div className="pl-2">
+                <div className="rounded-xl overflow-hidden border-2 border-white shadow-md w-20 h-20 sm:w-24 sm:h-24 bg-white">
+                  {community.logo_url ? (
+                    <Image
+                      src={community.logo_url}
+                      alt={community.name}
+                      width={128}
+                      height={128}
+                      className="object-cover"
+                      draggable={false}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-[#EBE9E0] flex items-center justify-center">
+                      <span className="text-4xl font-bold text-gray-400">
+                        {community.name.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-
-            {/* Header Section */}
-            <div className="ml-24 sm:ml-28 flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-0 mb-3">
-              <div>
-                <h3 className="font-instrument-serif text-xl sm:text-2xl text-gray-900 font-bold leading-tight">
-                  {community.name}
-                </h3>
-                {community.external_url && (
-                  <a 
-                    href={community.external_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 mt-1"
-                  >
-                    <ExternalLink className="w-3 h-3" />
-                    Visit Community
-                  </a>
-                )}
-              </div>
+              
               <Badge 
-                className="bg-blue-50/80 text-blue-600 px-2 sm:px-3 py-1 sm:py-1.5 text-sm rounded-lg flex items-center gap-1.5 hover:bg-blue-50 transition-colors self-start"
+                className="bg-blue-100 text-blue-800 px-3 py-1.5 text-base rounded-xl flex items-center gap-1.5 border-2 border-blue-200 shadow-sm select-none"
+                style={{ pointerEvents: 'none' }}
               >
-                <Users2Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <Users2Icon className="w-4 h-4" />
                 {new Intl.NumberFormat('en-US').format(community.member_count)}
               </Badge>
             </div>
 
+            {/* Header Section */}
+            <div className="mt-2 mb-3 pl-2">
+              <h3 className="font-instrument-serif text-xl sm:text-2xl text-gray-900 font-bold leading-tight">
+                {community.name}
+              </h3>
+            </div>
+
             {/* Description */}
             {community.description && (
-              <p className="text-sm text-gray-600 leading-relaxed line-clamp-2 mb-4">
+              <p className="text-sm text-gray-600 leading-relaxed line-clamp-2 mb-4 pl-2">
                 {community.description}
               </p>
             )}
-
+  
             {/* Stats Bar */}
             <div className="flex items-center justify-between border-t border-gray-100 pt-3 mt-auto gap-2">
               <VoteButton
