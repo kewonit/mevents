@@ -24,7 +24,7 @@ export function TopicPageContent({ topicData, communities, votesCount }: TopicPa
   return (
     <div className="flex flex-col lg:flex-row min-h-screen pt-16">
       {/* Sidebar */}
-      <aside className="w-full lg:w-1/3 bg-[#f3f1ea] p-4 lg:p-8 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] -mt-16 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+      <aside className="w-full lg:w-1/3 bg-[#f3f1ea] p-4 lg:p-8 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] -mt-16 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         <div className="space-y-4 lg:space-y-6 pt-20 lg:pt-0">
           <Link href="/topics">
             <Button variant="ghost" className="bg-white/60 hover:bg-white/80">
@@ -69,7 +69,7 @@ export function TopicPageContent({ topicData, communities, votesCount }: TopicPa
           {/* Type Filter Card */}
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6">
             <h3 className="text-sm font-medium text-gray-500 mb-4">Filter by Type</h3>
-            <div className="overflow-y-auto max-h-[160px] pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+            <div className="overflow-y-auto max-h-[160px] pr-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <div className="grid grid-cols-2 gap-2">
                 {COMMUNITY_TYPES.map((type) => (
                   <button
@@ -83,7 +83,7 @@ export function TopicPageContent({ topicData, communities, votesCount }: TopicPa
                     }}
                     className={`p-2 rounded-xl border transition-colors ${
                       selectedTypes.includes(type)
-                        ? 'bg-white border-blue-200 text-blue-800'
+                        ? 'bg-emerald-50 border-emerald-300 text-emerald-700 shadow-sm'
                         : 'bg-white/50 border-gray-200 text-gray-600 hover:bg-white/80'
                     }`}
                   >

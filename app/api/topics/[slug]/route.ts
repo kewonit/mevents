@@ -2,11 +2,11 @@ import { createClient } from '@/app/utils/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { slug: Promise<string> } }
+  _request: NextRequest,
+  context: { params: { slug: string } }
 ) {
   try {
-    const slug = await params.slug
+    const slug = context.params.slug // The param is already resolved here
     const searchName = slug.replace(/-/g, ' ')
     const supabase = await createClient()
     
