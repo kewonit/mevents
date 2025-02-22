@@ -36,7 +36,7 @@ export default function LandingPage() {
           you&apos;d normally spend weeks uncovering.
         </p>
 
-        <Link href="/login" style={{ marginTop: "-2px" }}>
+        <Link href="/topics" style={{ marginTop: "-2px" }}>
           <div
             className="inline-flex items-center bg-black text-white rounded-[10px] hover:bg-black/90 transition-colors font-instrument-sans"
             style={{ width: "227px", height: "49px" }}
