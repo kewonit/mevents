@@ -7,25 +7,16 @@ export function Footer() {
       <div className="container mx-auto px-4 w-full">
         <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start w-full">
           <div className="flex flex-col items-center lg:items-start gap-4 sm:gap-2 w-full">
-            <div className="w-[46px] h-[13px] relative mb-4 sm:mb-2">
-              <Image
-                src="https://res.cloudinary.com/ducqjmtlk/image/upload/q_100/v1737901490/nuablack_dgaajp.png"
-                alt="Nua Logo"
-                fill
-                sizes="46px"
-                className="object-contain object-left"
-                quality={100}
-              />
-            </div>
-            <div className="w-[120px] h-[40px] relative mb-4 sm:mb-2">
+            <div className="w-[360px] h-[120px] relative mb-4 sm:mb-2">
               <Image
                 src="https://res.cloudinary.com/dfyrk32ua/image/upload/v1740208532/kommodex/kommodex_ke2bom.webp"
-                alt="Nua Logo"
+                alt="kommodex logo"
                 fill
-                sizes="120px"
+                sizes="360px"
                 className="object-contain object-left"
                 priority
                 quality={100}
+                draggable={false}
                 style={{ filter: "invert(1)" }}
               />
             </div>
@@ -41,10 +32,10 @@ export function Footer() {
         </div>
         <div className="mt-8 lg:mt-40 text-sm opacity-70 text-center lg:text-left">
           <div>
-            Built using 100% open source tools, is also 100% open source, and built in 36 hours for FOSS Hack&apos;25.
+            Built using exclusively open-source technologies and developed with exemplary efficiency under 36 hours at localhost:pune @ FOSSHack &apos;25
           </div>
           <div>
-            Open Sourced under the MIT License | <a href="https://github.com/kewonit/mevents/">Github</a>
+            Distributed under <a href="https://opensource.org/licenses/MIT" className="hover:underline">the MIT License</a> | <a href="https://github.com/kewonit/mevents/" className="hover:underline">GitHub</a>
           </div>
         </div>
       </div>

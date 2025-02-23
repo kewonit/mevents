@@ -22,9 +22,9 @@ export default function LandingPage() {
           className="text-[32px] sm:text-[48px] md:text-[64px] leading-[1.3] sm:leading-[83px] text-center px-4 lg:px-[314px] text-gray-900"
           style={{ marginTop: "0px", marginBottom: "0px" }}
         >
-          <div className="sm:whitespace-nowrap px-2">
+          <div className="whitespace-normal sm:whitespace-nowrap px-2">
             <span className="font-instrument-serif font-normal text-gray-900">Automate </span>
-            <span className="font-instrument-serif font-normal italic text-gray-900">high quality </span>
+            <span className="font-instrument-serif font-normal italic text-gray-900">quality Indian </span>
             <span className="font-instrument-serif font-normal text-gray-900">community search</span>
           </div>
           <div className="font-instrument-serif font-normal text-gray-900 px-2">to speed up your discovery</div>
@@ -36,7 +36,7 @@ export default function LandingPage() {
           you&apos;d normally spend weeks uncovering.
         </p>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <Link href="/topics">
             <div
               className="inline-flex items-center bg-black text-white rounded-[10px] hover:bg-black/90 transition-colors font-instrument-sans"
@@ -83,18 +83,18 @@ export default function LandingPage() {
         </div>
 
       </div>
-      {/* 
         <div className="relative w-full">
           <Image
-            src="https://res.cloudinary.com/ducqjmtlk/image/upload/v1738096434/NUA_DEMO_2_1_kn8cwi.png"
-            alt="Nua Integration Visualization"
+            src="https://res.cloudinary.com/dfyrk32ua/image/upload/v1740274388/kommodex/community_logo_banners/Screenshot_2025-02-23_070223_thravg.png"
+            alt="Main page show"
             width={1274}
             height={1043}
-            className="w-full max-w-[1274px] mx-auto mt-3"
+            sizes="(max-width: 768px) 100vw, 1274px"
+            className="w-full max-w-[1274px] mx-auto mt-20 sm:mt-10"
             priority
           />
           <div
-            className="absolute bottom-0 left-0 right-0 w-full"
+            className="absolute bottom-0 left-0 right-0 w-full hidden sm:block"
             style={{
               height: "303px",
               background: "linear-gradient(to top, #DCD5C1 0%, rgba(217, 217, 217, 0) 100%)",
@@ -102,7 +102,7 @@ export default function LandingPage() {
             }}
           />
         </div>
-
+      {/* 
         <div className="container mx-auto relative" style={{ height: "887px" }}>
           <div className="absolute" style={{ top: "290px", left: "50%", transform: "translateX(-50%)", zIndex: "0" }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="1517" height="629" viewBox="0 0 1517 629" fill="none">
@@ -125,7 +125,6 @@ export default function LandingPage() {
               </defs>
             </svg>
           </div>
-
           <div className="w-full flex justify-center">
             <div className="max-w-[1024px] w-full">
               <div
