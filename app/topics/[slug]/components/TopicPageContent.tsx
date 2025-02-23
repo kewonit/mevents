@@ -4,8 +4,13 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input' // new import for shadcn Input
 import { CommunityGrid } from './CommunityGrid'
 import { CommunityWithStats } from '@/app/utils/db'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+// Define sort options type
+type SortOption = "members" | "votes" | "newest"
 
 const COMMUNITY_TYPES = ['reddit', 'discord', 'forum', 'telegram', 'matrix', 'custom'] as const
 
@@ -20,6 +25,8 @@ interface TopicPageContentProps {
 
 export function TopicPageContent({ topicData, communities, votesCount }: TopicPageContentProps) {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([])
+  const [searchQuery, setSearchQuery] = useState("") // new search state
+  const [sortBy, setSortBy] = useState<SortOption>("members") // new sort state
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen pt-16">
@@ -93,6 +100,15 @@ export function TopicPageContent({ topicData, communities, votesCount }: TopicPa
               </div>
             </div>
           </div>
+
+          {/* Search Bar using shadcn Input */}
+          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6">
+            <Input 
+              placeholder="Search communities..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
         </div>
       </aside>
 
@@ -100,12 +116,25 @@ export function TopicPageContent({ topicData, communities, votesCount }: TopicPa
       <main className="w-full lg:w-2/3 p-4 lg:p-8">
         <div className="space-y-6 lg:space-y-8">
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 lg:p-8">
-            <h2 className="font-instrument-serif text-2xl text-gray-900 mb-6">
-              Communities
-            </h2>
+            {/* Header row with Communities title and sorting dropdown */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-instrument-serif text-2xl text-gray-900">Communities</h2>
+              <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="members">Most Members</SelectItem>
+                  <SelectItem value="votes">Top Voted</SelectItem>
+                  <SelectItem value="newest">Newest</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <CommunityGrid 
               communities={communities} 
               selectedTypes={selectedTypes}
+              searchQuery={searchQuery} // pass searchQuery for filtering
+              sortBy={sortBy} // pass sort state
             />
           </div>
         </div>

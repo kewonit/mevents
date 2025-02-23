@@ -1,9 +1,5 @@
-"use client"
-
 import { CommunityWithStats } from "@/app/utils/db"
 import { CommunityCard } from "./CommunityCard"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useState } from "react"
 import { VoteProvider } from "@/app/contexts/VoteContext"
 
 type SortOption = "members" | "votes" | "newest"
@@ -11,13 +7,14 @@ type SortOption = "members" | "votes" | "newest"
 interface CommunityGridProps {
   communities: CommunityWithStats[]
   selectedTypes: string[]
+  searchQuery?: string
+  sortBy: SortOption // new prop for sort state
 }
 
-export const CommunityGrid: React.FC<CommunityGridProps> = ({ communities, selectedTypes }) => {
-  const [sortBy, setSortBy] = useState<SortOption>("members")
-
+export const CommunityGrid: React.FC<CommunityGridProps> = ({ communities, selectedTypes, searchQuery = "", sortBy }) => {
   const filteredAndSortedCommunities = [...communities]
     .filter(community => selectedTypes.length === 0 || selectedTypes.includes(community.type))
+    .filter(community => community.name.toLowerCase().includes(searchQuery.trim().toLowerCase()))
     .sort((a, b) => {
       switch (sortBy) {
         case "members":
@@ -34,19 +31,6 @@ export const CommunityGrid: React.FC<CommunityGridProps> = ({ communities, selec
   return (
     <VoteProvider initialCommunities={communities}>
       <div className="space-y-6">
-        <div className="flex justify-end">
-          <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="members">Most Members</SelectItem>
-              <SelectItem value="votes">Top Voted</SelectItem>
-              <SelectItem value="newest">Newest</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        
         <div className="grid grid-cols-1 gap-6">
           {filteredAndSortedCommunities.map((community) => (
             <CommunityCard key={community.id} community={community} />
