@@ -1,95 +1,108 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { CommunityType } from '@/app/utils/db'
+import { Community, CommunityType, Topic } from '@/app/utils/db'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 interface CreateCommunityDialogProps {
-  topicId: string
+  onCommunityCreated?: (community: Community) => void;
 }
 
+export function CreateCommunityDialog({ onCommunityCreated }: CreateCommunityDialogProps) {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [type, setType] = useState<CommunityType>('forum');
+  const [topics, setTopics] = useState<Topic[]>([]);
+  const [selectedTopicId, setSelectedTopicId] = useState<string>('');
+  const [loadingTopics, setLoadingTopics] = useState(false);
 
-export function CreateCommunityDialog({ topicId }: CreateCommunityDialogProps) {
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [type, setType] = useState<CommunityType>('forum')
-  const router = useRouter()
+  useEffect(() => {
+    const fetchTopics = async () => {
+      if (!open) return; // Only fetch when dialog opens
+      setLoadingTopics(true);
+      try {
+        const response = await fetch('/api/topics');
+        if (!response.ok) throw new Error('Failed to fetch topics');
+        const data = await response.json();
+        setTopics(data);
+      } catch (error) {
+        console.error('Error fetching topics:', error);
+        toast.error('Failed to load topics');
+      } finally {
+        setLoadingTopics(false);
+      }
+    };
+
+    if (open) {
+      fetchTopics();
+    }
+  }, [open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    // Add console.log to debug
-    console.log('Submitting with topicId:', topicId)
+    e.preventDefault();
 
-    if (!name.trim()) {
-      toast.error('Community name is required')
-      return
+    if (!selectedTopicId) {
+      toast.error('Please select a topic');
+      return;
     }
 
-    setLoading(true)
+    if (!name.trim()) {
+      toast.error('Community name is required');
+      return;
+    }
+
+    setLoading(true);
     try {
       const response = await fetch('/api/communities', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: name.trim(),
           description: description.trim(),
           type,
-          topicId: topicId, // Ensure topicId is explicitly passed
+          topicId: selectedTopicId,
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to create community')
+        throw new Error(data.error || 'Failed to create community');
       }
 
-      toast.success('Community created successfully')
-      setName('')
-      setDescription('')
-      setType('forum')
-      router.refresh()
-      setOpen(false)
+      toast.success('Community created successfully');
+      onCommunityCreated?.(data);
+      setOpen(false);
+      resetForm();
     } catch (error) {
       if (error instanceof Error) {
-        toast.error(error.message)
+        toast.error(error.message);
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  // Move topic validation from handleClick to here
-  if (!topicId) {
-    return (
-      <Button 
-        variant="outline" 
-        className="font-instrument-sans"
-        onClick={() => toast.error('Please select a topic first')}
-      >
-        Create Community
-      </Button>
-    )
-  }
+  const resetForm = () => {
+    setName('');
+    setDescription('');
+    setType('forum');
+    setSelectedTopicId('');
+  };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(newOpen) => {
+      setOpen(newOpen);
+      if (!newOpen) resetForm();
+    }}>
       <DialogTrigger asChild>
-        <Button 
-          variant="outline" 
-          className="font-instrument-sans"
-          onClick={() => setOpen(true)} // Simplified since we validate topicId above
-        >
+        <Button variant="outline" className="font-instrument-sans">
           Create Community
         </Button>
       </DialogTrigger>
@@ -101,6 +114,25 @@ export function CreateCommunityDialog({ topicId }: CreateCommunityDialogProps) {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="topic">Topic</Label>
+            <Select
+              value={selectedTopicId}
+              onValueChange={setSelectedTopicId}
+              disabled={loadingTopics}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a topic" />
+              </SelectTrigger>
+              <SelectContent>
+                {topics.map((topic) => (
+                  <SelectItem key={topic.id} value={topic.id}>
+                    {topic.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div>
             <Label htmlFor="name">Name</Label>
             <Input
@@ -145,5 +177,5 @@ export function CreateCommunityDialog({ topicId }: CreateCommunityDialogProps) {
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

@@ -12,7 +12,7 @@ import { Building2, Clock, ArrowRight } from "lucide-react";
 import { MembershipRequestsList } from "@/components/membership-requests-list";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { CreateCommunityDialog } from "@/components/create-community-dialog";
-import { Community, Topic } from '@/app/utils/db'
+import { Community} from '@/app/utils/db'
 
 interface Profile {
   id: string;
@@ -29,8 +29,6 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [activeTab, setActiveTab] = useState('communities'); 
-  const [selectedTopicId, setSelectedTopicId] = useState<string>('');
-  const [topics, setTopics] = useState<Topic[]>([])
   const [selectedCommunityId, setSelectedCommunityId] = useState<string>('');
   const [communities, setCommunities] = useState<Community[]>([]);
 
@@ -63,28 +61,16 @@ export default function DashboardPage() {
   }, [router]);
 
   useEffect(() => {
-    const fetchTopics = async () => {
-      try {
-        const response = await fetch('/api/topics')
-        if (!response.ok) throw new Error('Failed to fetch topics')
-        const data = await response.json()
-        setTopics(data)
-      } catch (error) {
-        console.error('Error fetching topics:', error)
-        toast.error('Failed to load topics')
-      }
-    }
-    fetchTopics()
-  }, [])
-
-  useEffect(() => {
     const fetchCommunities = async () => {
-      if (!selectedTopicId) return;
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
+
         const { data, error } = await supabase
           .from('communities')
           .select('*')
-          .eq('topic_id', selectedTopicId);
+          .eq('created_by', session.user.id)
+          .order('created_at', { ascending: false });
 
         if (error) throw error;
         setCommunities(data || []);
@@ -95,11 +81,7 @@ export default function DashboardPage() {
     };
 
     fetchCommunities();
-  }, [selectedTopicId]);
-
-  useEffect(() => {
-    setSelectedCommunityId('');
-  }, [selectedTopicId]);
+  }, []); // Only fetch once on mount
 
   const handleSignOut = async () => {
     try {
@@ -145,25 +127,12 @@ export default function DashboardPage() {
         return (
           <div className="space-y-6">
             <h2 className="text-xl font-instrument-serif">My Communities</h2>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-              <div className="mb-2 sm:mb-0 sm:mr-2">
-                <Select 
-                  value={selectedTopicId} 
-                  onValueChange={setSelectedTopicId}
-                >
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select a topic" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {topics.map((topic) => (
-                      <SelectItem key={topic.id} value={topic.id}>
-                        {topic.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <CreateCommunityDialog topicId={selectedTopicId} />
+            <div className="flex justify-end">
+              <CreateCommunityDialog 
+                onCommunityCreated={(newCommunity) => {
+                  setCommunities(prev => [newCommunity, ...prev]);
+                }}
+              />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {communities.length > 0 ? (
@@ -179,6 +148,9 @@ export default function DashboardPage() {
                         {community.description}
                       </p>
                     )}
+                    <div className="text-sm text-gray-500">
+                      Status: {community.approval_status}
+                    </div>
                   </div>
                 ))
               ) : (
