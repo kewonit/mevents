@@ -35,8 +35,29 @@ export default function Changelog() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
+                <span>User Experience & Dynamic Routing (PR #10 & #11)</span>
+                <span className="text-sm text-muted-foreground">Feb 23, 2025</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li>Add search functionality to TopicPageContent and CommunityGrid</li>
+                <li>Enhance LandingPage layout and content</li>
+                <li>Improve TopicCard with better loading states</li>
+                <li>Add LoadingOverlay component</li>
+                <li>Implement TopicCard and TopicCardSkeleton components</li>
+                <li>Refactor TopicsTable for dynamic rendering</li>
+                <li>Add Contact page</li>
+                <li>Update README documentation</li>
+              </ul>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
                 <span>Community Pages Update (PR #8)</span>
-                <span className="text-sm text-muted-foreground">Feb 22, 2025</span>
+                <span className="text-sm text-muted-foreground">Feb 23, 2025</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -53,7 +74,7 @@ export default function Changelog() {
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Community Features (PR #6)</span>
-                <span className="text-sm text-muted-foreground">Feb 22, 2025</span>
+                <span className="text-sm text-muted-foreground">Feb 23, 2025</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
