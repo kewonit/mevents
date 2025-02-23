@@ -146,7 +146,7 @@ export default function DashboardPage() {
           <div className="space-y-6">
             <h2 className="text-xl font-instrument-serif">My Communities</h2>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-              <div className="mb-2 sm:mb-0 sm:mr-2"> {/* Wrapper div with styling */}
+              <div className="mb-2 sm:mb-0 sm:mr-2">
                 <Select 
                   value={selectedTopicId} 
                   onValueChange={setSelectedTopicId}

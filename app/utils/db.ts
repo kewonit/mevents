@@ -37,6 +37,7 @@ export interface Community {
   created_by: string | null
   created_at: string
   updated_at: string
+  approval_status: 'pending' | 'approved' | 'rejected' | 'requested'
 }
 
 export interface CommunityVote {

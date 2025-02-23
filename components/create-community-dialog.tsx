@@ -14,10 +14,6 @@ interface CreateCommunityDialogProps {
   topicId: string
 }
 
-interface CreateCommunityError {
-  message: string
-  field?: string
-}
 
 export function CreateCommunityDialog({ topicId }: CreateCommunityDialogProps) {
   const [open, setOpen] = useState(false)
@@ -29,8 +25,12 @@ export function CreateCommunityDialog({ topicId }: CreateCommunityDialogProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!topicId) {
-      toast.error('Please select a topic first')
+    
+    // Add console.log to debug
+    console.log('Submitting with topicId:', topicId)
+
+    if (!name.trim()) {
+      toast.error('Community name is required')
       return
     }
 
@@ -42,19 +42,22 @@ export function CreateCommunityDialog({ topicId }: CreateCommunityDialogProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name,
-          description,
+          name: name.trim(),
+          description: description.trim(),
           type,
-          topicId,
+          topicId: topicId, // Ensure topicId is explicitly passed
         }),
       })
 
+      const data = await response.json()
       if (!response.ok) {
-        const error = await response.json() as CreateCommunityError
-        throw new Error(error.message)
+        throw new Error(data.error || 'Failed to create community')
       }
 
       toast.success('Community created successfully')
+      setName('')
+      setDescription('')
+      setType('forum')
       router.refresh()
       setOpen(false)
     } catch (error) {
@@ -66,10 +69,27 @@ export function CreateCommunityDialog({ topicId }: CreateCommunityDialogProps) {
     }
   }
 
+  // Move topic validation from handleClick to here
+  if (!topicId) {
+    return (
+      <Button 
+        variant="outline" 
+        className="font-instrument-sans"
+        onClick={() => toast.error('Please select a topic first')}
+      >
+        Create Community
+      </Button>
+    )
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="font-instrument-sans">
+        <Button 
+          variant="outline" 
+          className="font-instrument-sans"
+          onClick={() => setOpen(true)} // Simplified since we validate topicId above
+        >
           Create Community
         </Button>
       </DialogTrigger>
@@ -77,7 +97,7 @@ export function CreateCommunityDialog({ topicId }: CreateCommunityDialogProps) {
         <DialogHeader>
           <DialogTitle>Create a new community</DialogTitle>
           <DialogDescription>
-            Create a new community for people to join and discuss.
+            Create your community and start building your tribe. Your community will be reviewed by our moderators before being made public.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -115,7 +135,10 @@ export function CreateCommunityDialog({ topicId }: CreateCommunityDialogProps) {
             </Select>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={loading || !topicId}>
+            <Button 
+              type="submit" 
+              disabled={loading || !name.trim()} // Remove !topicId condition since we already validate in handleSubmit
+            >
               {loading ? 'Creating...' : 'Create'}
             </Button>
           </DialogFooter>
